@@ -1,0 +1,31 @@
+# A100 RL 参数探针模板（非正式训练配置）
+# 4090 的边界（TP4 不可行、group<=2）由 24GB 显存造成，A100(40/80G) 不可外推，
+# 必须重做精简版 resource gate（参照 4090 的 run_actor_boundary.sh / run_grpo_smoke.sh）
+model:
+  name: Qwen3-8B-CC-SFT-v1
+  hf_repo: liangzhidanta/Qwen3-8B-CC-SFT-v1
+
+probe_matrix:
+  actor_tp: [2, 4]           # A100 40/80G 下 TP4 大概率可行；TP2 待测
+  rollout_tp: [1, 2]         # A100 单卡 KV 充裕，TP1 值得重测
+  group_size: [2, 4, 8, 16]
+  context: [32768]
+  rollout_replicas: [1, 2, 4]  # 按可用 GPU 数组合
+
+must_reverify:
+  - colocate vs disaggregated   # A100 若 TP4 actor 可行 → disaggregated 重新可选
+  - sglang mem_fraction_static 与 KV 容量曲线
+  - TMS(offload) 是否仍必要
+  - bs*group 吞吐-饥饿曲线（4090 实测 256 并发 49% 超时）
+  - qwen25 parser canary（附 canary 脚本：单任务多轮 use_tool=True + reward 判定）
+
+fixed_no_probe:               # 与硬件无关，直接沿用
+  tool_call_parser: qwen25
+  reasoning_parser: qwen3
+  reward: binary F2P/P2P
+  clip: 0.2/0.28
+  lr: 1e-6 constant
+  kl: disabled
+  full_parameter: true
+  claude_code: 2.1.258
+  eval_protocol: EVAL_PROTOCOL_V1 (sha f0d0697111ce0d5f…)

@@ -1,0 +1,44 @@
+{
+ "version": "BASELINE_SCORE_V1",
+ "model": "Qwen3-8B-Instruct-PreSFT",
+ "scoring_set": "EVAL_SCORING_SET_V1",
+ "protocol_sha256": "f0d0697111ce0d5f5cfd27d60bfb7b88d3a691e569b42b952823381cf8d16875",
+ "numerator": 9,
+ "denominator": 303,
+ "pass_at_1": 0.0297029702970297,
+ "pass_at_1_str": "0.0297029702970297",
+ "by_layer_on_scoring_set": {
+  "easy": {
+   "n": 31,
+   "solved": 4,
+   "rate": 0.129032
+  },
+  "medium": {
+   "n": 115,
+   "solved": 4,
+   "rate": 0.034783
+  },
+  "harder": {
+   "n": 157,
+   "solved": 1,
+   "rate": 0.006369
+  }
+ },
+ "context_overflow_rate": {
+  "n": 84,
+  "denominator": 303,
+  "rate": 0.2772
+ },
+ "solved_task_ids": [
+  "Knio__dominate.9082227e.func_basic__3j8c0kj7",
+  "Knio__dominate.9082227e.func_basic__o8ou3kcn",
+  "Knio__dominate.9082227e.func_basic__rj7spm7s",
+  "borntyping__python-colorlog.dfa10f59.func_basic__ds2yx2b1",
+  "borntyping__python-colorlog.dfa10f59.func_basic__ehyczsel",
+  "buriy__python-readability.40256f40.func_pm_op_swap__6qaf1vop",
+  "gruns__icecream.f76fef56.func_pm_ctrl_invert_if__sy2hagpa",
+  "kennethreitz__records.5941ab27.func_pm_ctrl_invert_if__ing6txm9",
+  "mewwts__addict.75284f95.func_basic__ide4hfpv"
+ ],
+ "frozen": true
+}

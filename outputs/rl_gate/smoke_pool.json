@@ -1,0 +1,80 @@
+{
+ "pool": "RL_RESOURCE_SMOKE_POOL",
+ "created": "2026-09-18T09:47:52+0800",
+ "source": "datasets/sft_v2/train_v2.jsonl（SFT 训练任务，非 held-out/非 303）",
+ "note": "资源测试专用；reward/solve 无能力评测意义；镜像复用已建 3 repo",
+ "tasks": [
+  {
+   "task_id": "Cog-Creators__Red-DiscordBot.33e0eac7.combine_file__oiyuzubr",
+   "repo": "Cog-Creators__Red-DiscordBot.33e0eac7",
+   "layer": "medium",
+   "total_tokens": 26650
+  },
+  {
+   "task_id": "Cog-Creators__Red-DiscordBot.33e0eac7.combine_module__4kg28fxt",
+   "repo": "Cog-Creators__Red-DiscordBot.33e0eac7",
+   "layer": "medium",
+   "total_tokens": 24815
+  },
+  {
+   "task_id": "Cog-Creators__Red-DiscordBot.33e0eac7.combine_module__vf99zbtj",
+   "repo": "Cog-Creators__Red-DiscordBot.33e0eac7",
+   "layer": "medium",
+   "total_tokens": 23612
+  },
+  {
+   "task_id": "Cog-Creators__Red-DiscordBot.33e0eac7.func_basic__00lrhil6",
+   "repo": "Cog-Creators__Red-DiscordBot.33e0eac7",
+   "layer": "easy",
+   "total_tokens": 27049
+  },
+  {
+   "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_invert_if__2ud66zpw",
+   "repo": "HIPS__autograd.ac044f0d",
+   "layer": "medium",
+   "total_tokens": 25897
+  },
+  {
+   "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_invert_if__f15jej56",
+   "repo": "HIPS__autograd.ac044f0d",
+   "layer": "harder",
+   "total_tokens": 29574
+  },
+  {
+   "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__3mi8dl8i",
+   "repo": "HIPS__autograd.ac044f0d",
+   "layer": "easy",
+   "total_tokens": 21918
+  },
+  {
+   "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__8sojg5cf",
+   "repo": "HIPS__autograd.ac044f0d",
+   "layer": "easy",
+   "total_tokens": 21679
+  },
+  {
+   "task_id": "Instagram__MonkeyType.70c3acf6.lm_modify__ihqrsvbg",
+   "repo": "Instagram__MonkeyType.70c3acf6",
+   "layer": "easy",
+   "total_tokens": 20102
+  },
+  {
+   "task_id": "Instagram__MonkeyType.70c3acf6.lm_modify__iu706vb1",
+   "repo": "Instagram__MonkeyType.70c3acf6",
+   "layer": "easy",
+   "total_tokens": 19700
+  },
+  {
+   "task_id": "Instagram__MonkeyType.70c3acf6.pr_306",
+   "repo": "Instagram__MonkeyType.70c3acf6",
+   "layer": "medium",
+   "total_tokens": 31107
+  },
+  {
+   "task_id": "Instagram__MonkeyType.70c3acf6.pr_318",
+   "repo": "Instagram__MonkeyType.70c3acf6",
+   "layer": "medium",
+   "total_tokens": 32654
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+experiment_id,topology,actor_gpu_count,actor_tp,rollout_gpu_count,rollout_tp,rollout_replicas,context_length,max_output_tokens,max_model_calls,group_size,concurrency,actor_max_tokens_per_gpu,actor_peak_vram,rollout_peak_vram,cpu_ram_peak,rollout_time,train_time,step_time,throughput,status,notes
+E01_engine_tp1_32k,rollout-only,0,0,1,1,1,32768,,,,1,,,22961MiB(GPU2),low,,,,0.087req/s@c1,PASS,weights 15.28G/card; KV=36949tok(5.08G); 1并发32k恰好; lat 11.6s; 启动36s
+E02_engine_tp2_32k,rollout-only,0,0,2,2,1,32768,,,,4,,,22059MiB(GPU0含他人3G),low,,,,0.226req/s@c8,PASS,KV=170782tok(5.86G/card); ~5并发32k; c4=0.106
+E03_engine_tp4_32k,rollout-only,0,0,4,4,1,32768,,,,8,,,22220MiB(GPU4),low,,,,0.164req/s@c8,PASS,KV=452406tok(7.77G/card); ~13并发32k; 单卡吞吐劣于TP2
+E04_actor_tp4_mt4096,actor-only,4,4,0,0,0,32768,,4096,,,,24.0GB峰值,,未见,,step0 40s,OOM,146MiB差; GPU0他人3.9G; mt降档无效(单序列23k固有峰值)
+E05_actor_tp4_mt3072,actor-only,4,4,0,0,0,32768,,3072,,,,,,OOM,同E04签名
+E06_actor_tp4_mt2048,actor-only,4,4,0,0,0,32768,,2048,,,,,,OOM,同E04签名
+E07_actor_tp4_mt1024,actor-only,4,4,0,0,0,32768,,1024,,,,,,OOM,同E04签名
+E08_actor_tp4_g4567_mt4096,actor-only,4,4,0,0,0,32768,,4096,,,,24.0GB峰值,,low,,step0~40s,OOM,干净卡GPU4-7; step0完成loss1.88; step1 OOM(146MiB); 结论TP4不可行
+E09_actor_tp4_g4567_mt1024,actor-only,4,4,0,0,0,32768,,1024,,,,,,,OOM,同E08; max_tokens与OOM无关
+E10_actor_tp8_mt4096,actor-only,8,8,0,0,0,32768,,4096,,,,17.5GB/card(含他人),low,,step~40s×2,PASS,2 optimizer steps; loss 1.88→1.63; grad_norm稳定; 纯训练余量~6GB/card
+E11_agent_tp2_c2,agent-rollout,0,0,2,2,1,32768,4096,900,2,2,,22140MiB(GPU1),low,217.5s总,,~109s/步,66.2 trajs/h,PASS,真实Docker+CC+判分; 0错误; rewards全0(parser bug期)
+E12_agent_tp2_c4,agent-rollout,0,0,2,2,1,32768,4096,900,4,4,,22142MiB,med,169.6s总,,,169.8 trajs/h,PASS,0错误; 84.9/h/GPU 单卡效率最优
+E13_agent_tp4_c8,agent-rollout,0,0,4,4,1,32768,4096,900,8,8,,22220miB,med,143.3s总,,,201.0 trajs/h,PASS,0错误; 50.2/h/GPU
+E14_agent_tp1_c1,agent-rollout,0,0,1,1,1,32768,4096,900,1,1,,22961miB,low,168.6s总,,,42.7 trajs/h,PASS,0错误
+E15_agent_tp1_c2,agent-rollout,0,0,1,1,1,32768,4096,900,2,2,,22961miB,low,112.2s总,,,64.2 trajs/h,PASS,KV预排队不报错(36.9k池<2×32k)
+E16_grpo_colocate_g2_real,GRPO-colocate,8,8,8,2,4,32768,4096,600,2,4,4096,22.9GB(GPU0含他人),22.9GB,med,~330s/rollout批,~40s,~370s/step,~9.7 trajs/h,PASS,真实reward全0(池任务未解); 2 steps exit=0 复现2次; TMS必须
+E17_grpo_colocate_g4_32k,GRPO-colocate,8,8,8,2,4,32768,4096,600,4,8,4096,,,~24GB,GPU0,~600s,,,OOM,rollout PASS(use_tool=True多轮); train step0 OOM(820MiB差; GPU0他人3.9G)
+E18_grpo_colocate_g4_24k,GRPO-colocate,8,8,8,2,4,24576,2048,600,4,8,2048,,,,,,,OOM,24k/2k+mt2048+chunk512仍OOM; 同GPU0签名
+E19_engine_memfrac036,rollout-only,0,0,8,2,4,24576,,,,4,,,~9GB,,,engine-died,KV=3248tok<17k system → 引擎地板memfrac≈0.42
+E20_grpo_g2_synth_reward,GRPO-colocate,8,8,8,2,4,24576,2048,600,2,4,2048,,22GB,med,,,~40s,PASS,[0,1]合成奖励; grad_norm=3.335; pg_loss=-3e-8≠0; 参数更新机制证明

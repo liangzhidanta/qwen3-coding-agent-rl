@@ -1,0 +1,42 @@
+{
+ "train_v2.jsonl": {
+  "rows": 910,
+  "pass": 910,
+  "pass_rate": 1.0,
+  "bad": [],
+  "recomputed_total_tokens": {
+   "min": 18887,
+   "median": 23345,
+   "mean": 24146.3,
+   "max": 32740
+  },
+  "recomputed_trainable_tokens": {
+   "min": 370,
+   "median": 1582,
+   "mean": 1967.2,
+   "max": 8213
+  },
+  "tokenizer": "/data/wangshenghua/wsh/models/Qwen3-8B",
+  "loss_mask_type": "qwen3"
+ },
+ "val_v2.jsonl": {
+  "rows": 93,
+  "pass": 93,
+  "pass_rate": 1.0,
+  "bad": [],
+  "recomputed_total_tokens": {
+   "min": 19647,
+   "median": 24203,
+   "mean": 24681.5,
+   "max": 32376
+  },
+  "recomputed_trainable_tokens": {
+   "min": 621,
+   "median": 1887,
+   "mean": 2140.9,
+   "max": 7352
+  },
+  "tokenizer": "/data/wangshenghua/wsh/models/Qwen3-8B",
+  "loss_mask_type": "qwen3"
+ }
+}

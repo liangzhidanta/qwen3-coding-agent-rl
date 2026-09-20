@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+outputs/
+hf_dataset_release_v1/
+datasets/sft_v2/*.jsonl
+envs/build/v2/
+envs/upstream/
+envs/funcy_repo*
+*.pt
+core*
+nohup.out
+# 含 gold patch / 原始轨迹的数据文件：不入库（HF dataset + 构建脚本确定性再生）
+outputs/eval/base_v1/eval_pool.json
+outputs/rl_gate/rl_tasks*.jsonl
+datasets/sft_v1/*.jsonl
+tasks/pilot_candidates.json
+tasks/pilot_*.json
+tasks/swesmith_funcy_*.json

@@ -1,0 +1,138 @@
+{
+  "protocol": "EVAL_PROTOCOL_V1",
+  "status": "frozen",
+  "frozen_at": "2026-09-16T16:30:00+0800",
+  "supersedes": "EVAL_PROTOCOL_V1_DRAFT.json (draft, obsolete)",
+  "gate_evidence": "smoke3: 3/3 protocol completion, 0 malformed tool calls, 0 protocol errors (outputs/eval/base_v1/smoke3_summary.json)",
+  "report_name_convention": "Qwen3-8B-Instruct-PreSFT (= 原始 Qwen/Qwen3-8B instruct checkpoint，非 Qwen3-8B-Base)",
+
+  "model": {
+    "repo_id": "Qwen/Qwen3-8B",
+    "local_path": "/data/wangshenghua/wsh/models/Qwen3-8B",
+    "config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+    "tokenizer_sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "note": "Qwen3-8B instruct (thinking model); untied embeddings"
+  },
+
+  "context": {
+    "context_length": 32768,
+    "server_enforcement": "sglang --context-length 32768",
+    "cc_count_tokens": "proxy fallback_zero (SGLang 无 /v1/messages/count_tokens)；CC 侧假设 200k，不做主动 compact，溢出按协议失败计"
+  },
+
+  "harness": {
+    "name": "Claude Code (native binary)",
+    "version": "2.1.258 (Claude Code)",
+    "binary_md5": "dcae13d6a38920aff34e1ad73c0144b8",
+    "invocation": "claude -p SWE_PROMPT --output-format stream-json --verbose --permission-mode bypassPermissions",
+    "swe_prompt": "Read PROBLEM_STATEMENT.md in the current directory and resolve the issue. Edit source files only (do NOT touch tests). After editing, run the relevant tests to verify your fix passes. Do NOT modify PROBLEM_STATEMENT.md and do NOT commit. When finished, print a one-line summary and exit.",
+    "permission_mode": "bypassPermissions",
+    "cc_env": {
+      "ANTHROPIC_BASE_URL": "http://host.docker.internal:18734 (teacher_proxy)",
+      "ANTHROPIC_MODEL": "glm-5.3 (CC catalog 认可的命名；实际服务权重=Qwen3-8B，proxy 不改写 model 字段，透明留痕)",
+      "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+      "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+      "CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT": "1 (2026-09-16 CC catalog 行为变化后必需，否则 -p 模式致命退出)",
+      "DISABLE_AUTOUPDATER": "1",
+      "IS_SANDBOX": "1"
+    },
+    "tool_schema_fingerprint": {
+      "tool_count": 25,
+      "tools_sha256_canonical_json": "56b608a303a83617d9736767b11496a666c2fd51c43e20caec662378a66b23d9",
+      "identical_to_teacher_v2": true,
+      "tool_names": ["Agent", "Bash", "CronCreate", "CronDelete", "CronList", "Edit", "EnterWorktree", "ExitWorktree", "ListAgents", "NotebookEdit", "Read", "ReportFindings", "ScheduleWakeup", "SendMessage", "Skill", "TaskCreate", "TaskGet", "TaskList", "TaskOutput", "TaskStop", "TaskUpdate", "WebFetch", "WebSearch", "Workflow", "Write"]
+    },
+    "system_prompt_fingerprint": {
+      "system_sha256_canonical_json_sample": "278319f20826cabe9ce7a257ab3cdc03277e372e95369f960358179b53d328b2",
+      "template_identical_to_teacher_v2": true,
+      "hash_drift_note": "system 内嵌 git 状态 SHA（task-bug commit / repo snapshot commit），逐 task 必然不同；模板本体与 teacher 完全同构（smoke 实测 diff 仅 2 行 git SHA）",
+      "approx_tokens": "~17.4k (system+tools)"
+    }
+  },
+
+  "serving": {
+    "engine": "sglang 0.5.15.post1 (editable /data/wangshenghua/wsh/sglang, 未改动)",
+    "endpoint": "/v1/messages (Anthropic-compat, streaming SSE)",
+    "launch_flags": "--tp 2 --context-length 32768 --attention-backend triton --disable-cuda-graph --reasoning-parser qwen3 --tool-call-parser auto --mem-fraction-static 0.80 --enable-metrics",
+    "mem_fraction_static": 0.80,
+    "recorder": "teacher_proxy (aiohttp) @0.0.0.0:18734，upstream=sglang；全量 wire 留痕 + 协议执行",
+    "proxy_enforcement": {
+      "TEACHER_SAMPLING_OVERRIDE": "{\"temperature\":1.0,\"top_p\":0.95}",
+      "TEACHER_MAX_TOKENS_CAP": "4096 (CC 原始请求 32000 → 钳制，injected_fields 留痕)",
+      "TEACHER_MAX_CALLS_PER_ROLLOUT": "32 (超过返回 400 使 CC 停止；并行 subagent 在途请求可致 +1~2 弹性，如实计量)",
+      "GLM_MODEL": "(empty, 不改写 model 字段)",
+      "TEACHER_INJECT_REASONING_EFFORT": "0"
+    }
+  },
+
+  "inference": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": null,
+    "max_tokens_per_turn": 4096,
+    "thinking": "Qwen3 原生 thinking（CC 发送 thinking:{type:adaptive}，SGLang reasoning-parser qwen3 输出 thinking block）",
+    "streaming": true
+  },
+
+  "agent_budget": {
+    "max_model_calls_per_task": 32,
+    "max_tool_calls_per_task": 32,
+    "wall_clock_timeout_sec": 1500,
+    "docker_exec_timeout_sec": 1800,
+    "enforcement": "model_calls=proxy 400；wall clock=timeout 杀进程(exit<0)；tool_calls=记录不硬停"
+  },
+
+  "environment": {
+    "pipeline": "Environment V2 (official-definition-first, 3-tier: cached_official → official_local_build → heuristic)",
+    "version_pins": "envs_v2.py with xdist-parse fix + base.Dockerfile (deb822/TUNA, http) fix",
+    "base_image": "jyangballin/swesmith.x86_64:local (官方 base + TUNA 网络适配)",
+    "repo_images": "swesmith-v2/<profile>:local, 11/11 holdout repo 官方定义本地构建",
+    "docker_a": "agent 工作区（挂载 CC 二进制，host.docker.internal 出网回 proxy）",
+    "docker_b": "clean judge 容器（同镜像，独立实例）"
+  },
+
+  "verifier": {
+    "baseline_gate": "pre-agent: apply bug patch → F2P 必须全 FAIL 且 P2P 必须全 PASS（official_definition_behaviorally_equivalent）才 attempt",
+    "post_agent": "Docker B: bug patch + agent patch → F2P 全 PASS 且 P2P 全 PASS",
+    "cheating_check": "agent diff 触及 tests/test/testing/conftest/setup.py/setup.cfg/pyproject.toml → cheating",
+    "solved_definition": "f2p_ok && p2p_ok && agent_exit_code==0 && !cheating",
+    "test_command_prefix": "conda activate testbed && pytest --disable-warnings --color=no --tb=no --verbose -p no:cacheprovider",
+    "pygments_override": "N/A (pygments 不在 holdout repo 集)"
+  },
+
+  "rollout": {
+    "protocol": "Pass@1",
+    "rollouts_per_task": 1,
+    "retry": false,
+    "resample_on_failure": false
+  },
+
+  "dataset": {
+    "name": "SWE-bench/SWE-smith (HF parquet snapshot)",
+    "revision": "ea6d7173829c7ec8fa16c22055699ff2e9188091",
+    "pool": "outputs/production_v2_registry.json#heldout_eval_pool (frozen 2026-09-14T18:37, seed 20260915)",
+    "task_count": 315,
+    "repo_level_holdout": 11,
+    "repos": ["Knio__dominate.9082227e", "aio-libs__async-timeout.d0baa9f1", "alanjds__drf-nested-routers.6144169d", "borntyping__python-colorlog.dfa10f59", "buriy__python-readability.40256f40", "gruns__icecream.f76fef56", "kennethreitz__records.5941ab27", "martinblech__xmltodict.0952f382", "mewwts__addict.75284f95", "rustedpy__result.0b855e1e", "termcolor__termcolor.3a42086f"],
+    "layer_distribution": {"easy": 31, "medium": 117, "harder": 167},
+    "isolation": "禁止进 teacher generation / SFT / RL / failure-mining 训练池；评测轨迹仅存 outputs/eval/base_v1/"
+  },
+
+  "seed": {
+    "eval_seed": 20260916,
+    "task_order": "sorted by (repo, instance_id) — deterministic",
+    "pilot20_selection": "层内等距抽样 easy:4/medium:8/harder:8（deterministic）",
+    "sampling_note": "模型采样 temp=1.0/top_p=0.95 为随机分布（Pass@1 单次抽样，不设温度退火）；除模型采样外全链路 deterministic"
+  },
+
+  "metrics": {
+    "primary": "solve_rate (reward=1 / attempted)",
+    "attempted_definition": "排除 environment_failure / evaluation_failure / patch_apply_failure（协议未跑完的任务）",
+    "completion_gate": "pilot20 protocol_completion_rate >= 0.95 且无系统性错误才跑 full315",
+    "secondary": ["model_calls", "tool_calls", "assistant_turns", "elapsed_sec", "final/max_context_tokens", "api_input/output_tokens", "tool_distribution", "failure_classes"],
+    "failure_classes": ["environment_failure", "protocol_failure", "no_patch", "budget_model_calls", "timeout", "cc_error", "cheating", "wrong_patch_f2p_fail"]
+  },
+
+  "change_policy": "本 V1 冻结后，任何针对 SFT/RL 模型改变条件都须产生 EVAL_PROTOCOL_V2，不得覆盖 V1；protocol_snapshot.json 必须与 EVAL_PROTOCOL_V1.json sha256 一致"
+}

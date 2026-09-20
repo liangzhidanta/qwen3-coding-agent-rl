@@ -1,0 +1,59 @@
+{
+  "protocol": "EVAL_PROTOCOL_V1_DRAFT",
+  "status": "draft",
+  "created_at": "2026-09-16T14:00:00+08:00",
+  "student_model": {
+    "repo_id": "Qwen/Qwen3-8B",
+    "local_path": "/data/wangshenghua/wsh/models/Qwen3-8B",
+    "config_sha256_prefix": "f7c4eadfbbf52247",
+    "tokenizer_sha256_prefix": "d5d09f07b48c3086",
+    "note": "Qwen3-8B instruct (NOT base); tie_word_embeddings=false (untied)"
+  },
+  "serving": {
+    "engine": "sglang",
+    "endpoint": "http://127.0.0.1:30000",
+    "anthropic_compat": "/v1/messages (verified working)",
+    "tp_size": 2,
+    "context_length": 32768,
+    "attention_backend": "triton",
+    "cuda_graph": "disabled (flashinfer JIT not available; enable after toolchain fix)",
+    "serving_gpus": [5, 6]
+  },
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": null,
+    "max_tokens_per_turn": 4096,
+    "enable_thinking": true
+  },
+  "agent": {
+    "harness": "Claude Code 2.1.258 (native binary)",
+    "prompt": "Read PROBLEM_STATEMENT.md in the current directory and resolve the issue. Edit source files only (do NOT touch tests). After editing, run the relevant tests to verify your fix passes. Do NOT modify PROBLEM_STATEMENT.md and do NOT commit. When finished, print a one-line summary and exit.",
+    "permission_mode": "bypassPermissions",
+    "tool_schema_fingerprint": "25 tools (Agent/Bash/Read/Edit/Write/Grep/Glob/...)",
+    "system_prompt": "Claude Code native (included in every turn; ~15.5k tokens with tools schema)"
+  },
+  "limits": {
+    "max_model_calls_per_task": 32,
+    "max_tool_calls_per_task": 32,
+    "wall_clock_timeout_sec": 1500,
+    "agent_budget_sec": 1500
+  },
+  "environment": {
+    "pipeline": "Environment V2 (official-definition-first, 3-tier)",
+    "verifier": "Docker B clean container, exact F2P/P2P + cheating check",
+    "environment_pipeline_version": "envs_v2 with xdist-parse fix + base.Dockerfile deb822 fix"
+  },
+  "evaluation_pool": {
+    "source": "frozen held-out eval pool (315 tasks / 11 repo-level holdout repos, seed 20260915)",
+    "registry": "outputs/production_v2_registry.json#heldout_eval_pool",
+    "NOT_uploaded": "task answers / teacher trajectories / gold patches excluded from HF dataset"
+  },
+  "metrics": {
+    "primary": "solve_rate (reward=1 / total attempted)",
+    "secondary": ["attempted/total (env success)", "avg_model_calls", "avg_tool_calls", "avg_elapsed_sec", "tool_distribution"],
+    "report": "per-repo breakdown + difficulty breakdown + comparison table (Base vs SFT vs RL)"
+  },
+  "comparison_targets": ["Qwen3-8B Base (pre-SFT)", "Qwen3-8B SFT", "Qwen3-8B RL (GRPO)", "Data Flywheel iterations"],
+  "notes": "DRAFT ONLY - not yet executed; 315-task baseline NOT run; held-out smoke NOT tested (Part 9 skipped)"
+}

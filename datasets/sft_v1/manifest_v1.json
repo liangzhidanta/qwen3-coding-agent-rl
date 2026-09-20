@@ -1,0 +1,172 @@
+{
+  "dataset_version": "sft_v1",
+  "created_at": "2026-09-14T13:39:26+0800",
+  "source_file": "datasets/sft_v1/val_v1.jsonl",
+  "source_rows": 59,
+  "included_rows": 56,
+  "excluded_rows": 3,
+  "excluded_over_context": [
+    {
+      "task_id": "joke2k__faker.8b401a7d.func_pm_ctrl_invert_if__92wz9s5f",
+      "repo": "joke2k__faker",
+      "source_rollout_id": "joke2k__faker.8b401a7d.func_pm_ctrl_invert_if__92wz9s5f::rollout_000",
+      "token_count": 33516,
+      "reason": "context_length_gt_32768"
+    },
+    {
+      "task_id": "pdfminer__pdfminer.six.1a8bd2f7.func_basic__qdvdqy7c",
+      "repo": "pdfminer__pdfminer.six",
+      "source_rollout_id": "pdfminer__pdfminer.six.1a8bd2f7.func_basic__qdvdqy7c::rollout_000",
+      "token_count": 34941,
+      "reason": "context_length_gt_32768"
+    },
+    {
+      "task_id": "pdfminer__pdfminer.six.1a8bd2f7.func_pm_remove_assign__ltv72mq0",
+      "repo": "pdfminer__pdfminer.six",
+      "source_rollout_id": "pdfminer__pdfminer.six.1a8bd2f7.func_pm_remove_assign__ltv72mq0::rollout_000",
+      "token_count": 34452,
+      "reason": "context_length_gt_32768"
+    }
+  ],
+  "train_rows": 46,
+  "val_rows": 10,
+  "train_repos": [
+    "Cog-Creators__Red-DiscordBot",
+    "Suor__funcy",
+    "agronholm__typeguard",
+    "bottlepy__bottle",
+    "jd__tenacity",
+    "joke2k__faker",
+    "luozhouyang__python-string-similarity",
+    "madzak__python-json-logger",
+    "mahmoud__boltons",
+    "oauthlib__oauthlib",
+    "pdfminer__pdfminer.six",
+    "pudo__dataset",
+    "pygments__pygments",
+    "pytest-dev__iniconfig"
+  ],
+  "val_repos": [
+    "PyCQA__flake8",
+    "agronholm__exceptiongroup",
+    "cantools__cantools",
+    "cknd__stackprinter",
+    "seatgeek__thefuzz"
+  ],
+  "repo_overlap_count": 0,
+  "source_stage_distribution": {
+    "source": {
+      "five_task": 5,
+      "production50": 42,
+      "twenty_task": 9
+    },
+    "train": {
+      "five_task": 4,
+      "production50": 34,
+      "twenty_task": 8
+    },
+    "val": {
+      "five_task": 1,
+      "production50": 8,
+      "twenty_task": 1
+    }
+  },
+  "layer_distribution": {
+    "train": {
+      "easy": 19,
+      "harder": 8,
+      "medium": 15,
+      "unknown": 4
+    },
+    "val": {
+      "easy": 2,
+      "harder": 3,
+      "medium": 4,
+      "unknown": 1
+    }
+  },
+  "token_stats": {
+    "total_tokens": {
+      "min": 19269,
+      "median": 22927,
+      "p90": 30810,
+      "max": 32083
+    },
+    "trainable_tokens": {
+      "min": 560,
+      "median": 1560,
+      "p90": 3358,
+      "max": 7704
+    },
+    "train": {
+      "total_tokens": {
+        "min": 19269,
+        "median": 22522,
+        "p90": 29978,
+        "max": 32083
+      }
+    },
+    "val": {
+      "total_tokens": {
+        "min": 20247,
+        "median": 24607,
+        "p90": 29418,
+        "max": 31885
+      }
+    }
+  },
+  "context_limit": 32768,
+  "tokenizer": "/data/wangshenghua/wsh/models/Qwen3-4B",
+  "loss_mask_type": "qwen3",
+  "version_pins": {
+    "teacher_model": "glm-5.3",
+    "provider": "zhipu-anthropic-compat",
+    "base_url": "https://open.bigmodel.cn/api/anthropic",
+    "claude_code_version": "2.1.258 (Claude Code)",
+    "slime_version": "v0.3.2",
+    "slime_commit": "3778dbf",
+    "loss_mask_type": "qwen3"
+  },
+  "generation_pipeline": [
+    "Claude Code 2.1.258 (harness, Docker A)",
+    "GLM-5.3 (zhipu anthropic-compat endpoint, via teacher_proxy)",
+    "raw trajectory (outputs/raw/<task>/rollout_NNN/requests.jsonl + result.json)",
+    "raw_to_sft.py (wire->manager, TrajectoryManager chain rebuild, success+protocol filter)",
+    "build_sft_v1.py (token recompute, >32k filter, seed=20260914 repo-level split, provenance)"
+  ],
+  "split": {
+    "method": "deterministic repo-level greedy (repo isolation first)",
+    "seed": 20260914,
+    "target_val_ratio": 0.2,
+    "actual_val_ratio": 0.1786
+  },
+  "leakage_checks": {
+    "task_id_overlap": [],
+    "source_rollout_id_overlap": [],
+    "repo_overlap": []
+  },
+  "validation": {
+    "validator": "validate_sft_data.py (9 checks, real Qwen3 tokenizer + MultiTurnLossMaskGenerator(qwen3), unmodified)",
+    "train_v1": {
+      "rows": 46,
+      "pass_100pct": true
+    },
+    "val_v1": {
+      "rows": 10,
+      "pass_100pct": true
+    },
+    "extra_checks": [
+      "total_tokens <= 32768 (both files)",
+      "task_id/source_rollout_id/repo overlap == 0"
+    ]
+  },
+  "swesmith_envs_archive": {
+    "source": "/tmp/swesmith_audit/SWE-smith-envs",
+    "destination": "teacher_data/envs/upstream/swesmith-envs",
+    "git_commit": "unknown",
+    "version_note": "tarball 解包存档，无 .git；/tmp 原件保留",
+    "file_count": 1802,
+    "size": "66M",
+    "archived_at": "2026-09-14T13:40:04+0800"
+  }
+}

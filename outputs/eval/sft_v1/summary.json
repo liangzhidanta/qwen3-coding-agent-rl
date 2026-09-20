@@ -1,0 +1,164 @@
+{
+  "mode": "full303",
+  "tasks": 303,
+  "attempted": 303,
+  "env_failures": 0,
+  "protocol_failures": 0,
+  "protocol_completion_rate": 1.0,
+  "solved": 85,
+  "solve_rate_pass@1": 0.2805,
+  "by_layer": {
+    "easy": {
+      "attempted": 31,
+      "solved": 18,
+      "solve_rate": 0.5806
+    },
+    "medium": {
+      "attempted": 115,
+      "solved": 32,
+      "solve_rate": 0.2783
+    },
+    "harder": {
+      "attempted": 157,
+      "solved": 35,
+      "solve_rate": 0.2229
+    }
+  },
+  "by_repo": {
+    "Knio__dominate.9082227e": {
+      "attempted": 41,
+      "solved": 6
+    },
+    "aio-libs__async-timeout.d0baa9f1": {
+      "attempted": 19,
+      "solved": 8
+    },
+    "alanjds__drf-nested-routers.6144169d": {
+      "attempted": 35,
+      "solved": 6
+    },
+    "borntyping__python-colorlog.dfa10f59": {
+      "attempted": 28,
+      "solved": 13
+    },
+    "buriy__python-readability.40256f40": {
+      "attempted": 40,
+      "solved": 7
+    },
+    "gruns__icecream.f76fef56": {
+      "attempted": 17,
+      "solved": 3
+    },
+    "kennethreitz__records.5941ab27": {
+      "attempted": 34,
+      "solved": 8
+    },
+    "martinblech__xmltodict.0952f382": {
+      "attempted": 44,
+      "solved": 13
+    },
+    "mewwts__addict.75284f95": {
+      "attempted": 28,
+      "solved": 15
+    },
+    "rustedpy__result.0b855e1e": {
+      "attempted": 12,
+      "solved": 5
+    },
+    "termcolor__termcolor.3a42086f": {
+      "attempted": 5,
+      "solved": 1
+    }
+  },
+  "behavior": {
+    "model_calls": {
+      "n": 303,
+      "min": 4,
+      "median": 13,
+      "mean": 14.3,
+      "p90": 21,
+      "max": 32
+    },
+    "tool_calls": {
+      "n": 303,
+      "min": 2,
+      "median": 13,
+      "mean": 13.3,
+      "p90": 20,
+      "max": 32
+    },
+    "assistant_turns": {
+      "n": 303,
+      "min": 4,
+      "median": 13,
+      "mean": 14.3,
+      "p90": 21,
+      "max": 32
+    },
+    "elapsed_seconds": {
+      "n": 303,
+      "min": 22.6,
+      "median": 339.3,
+      "mean": 354.0,
+      "p90": 601.6,
+      "max": 1098.1
+    },
+    "final_context_tokens": {
+      "n": 303,
+      "min": 18245,
+      "median": 27600,
+      "mean": 26521.5,
+      "p90": 28571,
+      "max": 28664
+    },
+    "max_context_tokens": {
+      "n": 303,
+      "min": 18245,
+      "median": 27600,
+      "mean": 26527.6,
+      "p90": 28571,
+      "max": 28664
+    },
+    "api_input_tokens": {
+      "n": 303,
+      "min": 35808,
+      "median": 267487,
+      "mean": 285935.9,
+      "p90": 449750,
+      "max": 651717
+    },
+    "api_output_tokens": {
+      "n": 303,
+      "min": 94,
+      "median": 3596,
+      "mean": 3785.3,
+      "p90": 6595,
+      "max": 12911
+    }
+  },
+  "tool_distribution": {
+    "Bash": 2510,
+    "Read": 1064,
+    "Edit": 435,
+    "Write": 6
+  },
+  "context_overflow_tasks": 201,
+  "failures": {
+    "outcome_counts": {
+      "no_patch": 113,
+      "not_solved": 102,
+      "budget_model_calls": 1,
+      "solved": 85,
+      "cheating": 2
+    },
+    "environment_failure": 0,
+    "protocol_failure": 0,
+    "no_patch": 113,
+    "budget_model_calls": 1,
+    "timeout": 0,
+    "cc_error": 0,
+    "cheating": 2,
+    "wrong_patch_f2p_fail": 102
+  },
+  "wall_clock_sec": 13506.0
+}

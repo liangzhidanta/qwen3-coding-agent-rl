@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><title>Trajectory Viewer Index</title>
+<style>
+*{box-sizing:border-box} body{font:14px/1.55 -apple-system,'Segoe UI',Roboto,'Noto Sans SC',sans-serif;
+  margin:0;background:#f6f7f9;color:#1c2024}
+.wrap{max-width:1080px;margin:0 auto;padding:18px}
+h1{font-size:18px;margin:0 0 4px;word-break:break-all}
+.sub{color:#5b6470;font-size:12px;margin-bottom:10px}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;margin:2px 4px 2px 0}
+.b-teacher{background:#e3f2fd;color:#0d47a1}.b-harness{background:#fff3e0;color:#e65100}
+.b-env{background:#eceff1;color:#37474f}.b-ok{background:#e8f5e9;color:#1b5e20;font-size:15px}
+.b-fail{background:#ffebee;color:#b71c1c;font-size:15px}.b-warn{background:#fff8e1;color:#e65100}
+.tabs{display:flex;gap:4px;margin:12px 0;border-bottom:2px solid #dfe3e8}
+.tabs button{border:0;background:#e9edf1;padding:7px 16px;border-radius:8px 8px 0 0;cursor:pointer;font-size:13px}
+.tabs button.on{background:#fff;font-weight:700;border:2px solid #dfe3e8;border-bottom:2px solid #fff}
+.tab{display:none;background:#fff;border:1px solid #e2e6ea;border-top:0;padding:16px;border-radius:0 0 10px 10px}
+.tab.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.card{background:#f9fbfc;border:1px solid #e2e6ea;border-radius:10px;padding:10px 12px}
+.card h3{margin:0 0 6px;font-size:12px;color:#5b6470;text-transform:uppercase;letter-spacing:.04em}
+.kv{display:flex;gap:8px;padding:2px 0;font-size:13px}
+.kv .k{color:#5b6470;min-width:130px}.kv .v{word-break:break-all}
+.mono{font:12px/1.5 ui-monospace,Consolas,Menlo,monospace;white-space:pre-wrap;word-break:break-all}
+.turn{border:1px solid #e2e6ea;border-radius:10px;margin:12px 0;background:#fff}
+.thead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:#f1f4f7;padding:8px 12px;border-radius:10px 10px 0 0;font-size:12px;color:#37474f}
+.thead b{color:#0d47a1}
+.src{font-size:10px;font-weight:800;padding:1px 7px;border-radius:8px;letter-spacing:.05em}
+.src-teacher{background:#bbdefb;color:#0d47a1}.src-tool{background:#c8e6c9;color:#1b5e20}
+.src-harness{background:#ffe0b2;color:#e65100}
+.tbody{padding:10px 12px}
+.reasoning summary,.tresult summary{cursor:pointer;color:#5b6470;font-size:12px}
+.reasoning pre,.tresult pre{background:#f4f6f8;border-radius:8px;padding:8px;margin:6px 0;max-height:340px;overflow:auto}
+.tool{border:1px solid #c8e6c9;border-left:4px solid #43a047;border-radius:8px;margin:8px 0;padding:8px 10px;background:#fafff9}
+.tool .tname{font-weight:700;color:#1b5e20}
+.tresult{border-top:1px dashed #a5d6a7;margin-top:8px;padding-top:6px}
+.tresult.missing{color:#b71c1c}.tresult.err .tbadge{color:#b71c1c;font-weight:700}
+.ellip{color:#90a4ae;text-align:center}
+.inc-ctx{border-left:3px solid #ffb74d;background:#fff8f0;border-radius:6px;padding:6px 10px;margin:6px 0;font-size:12px}
+details.fullctx{margin:6px 0;font-size:12px}
+.mini-diff{background:#f4f6f8;padding:8px;border-radius:8px;white-space:pre-wrap;max-height:300px;overflow:auto;font-size:11px}
+.d-add{color:#1b5e20;background:#e8f5e9;display:block}.d-del{color:#b71c1c;background:#ffebee;display:block}
+.d-ctx{color:#78909c;display:block}.d-hunk{color:#5b6470;font-weight:700;display:block}
+.mask-row{display:flex;gap:10px;border-radius:8px;padding:6px 10px;margin:4px 0;font-size:12px;align-items:baseline}
+.masked{background:#eceff1;color:#455a64;border-left:4px solid #90a4ae}
+.trainable{background:#e8f5e9;border-left:4px solid #2e7d32}
+.mask-row .role{font-weight:800;min-width:86px}
+.mask-row .cnt{margin-left:auto;white-space:nowrap;color:#5b6470}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid #e2e6ea;padding:6px 8px;text-align:left}
+th{cursor:pointer;background:#f1f4f7;position:sticky;top:0}
+tr:hover{background:#f6fbff}
+a{color:#0d47a1}.warnbox{background:#fff8e1;border:1px solid #ffd54f;border-radius:10px;padding:10px 12px;margin:8px 0}
+.pass-banner{font-size:20px;font-weight:800;padding:12px;text-align:center;border-radius:10px}
+input#q{padding:6px 10px;border:1px solid #cfd8dc;border-radius:8px;width:280px;margin-bottom:8px}
+</style></head><body><div class="wrap">
+<h1>Claude Code + GLM-5.3 Trajectory Viewer</h1>
+<div class="sub">static views · 点击行进入 · 表头点击排序</div>
+<input id="q" placeholder="搜索 task / repo / stage…" onkeyup="filt()">
+<table id="tbl"><thead><tr>
+<th>task</th><th>repo</th><th>stage</th><th>split</th><th>reward</th><th>model_calls</th>
+<th>tool_calls</th><th>total_tokens</th><th>trainable_tokens</th><th>duration</th><th>选择原因</th>
+</tr></thead><tbody><tr><td><a href='mahmoud__glom.fb3c4e76.func_basic__ympzqy0l__rollout_000.html'>mahmoud__glom.fb3c4e76.func_basic__ympzqy0l</a></td><td>mahmoud__glom.fb3c4e76</td><td>-</td><td>-</td><td>1.0</td><td>11</td><td>10</td><td>22998</td><td>1265</td><td>33.4s</td><td>指定</td></tr></tbody></table>
+<script>
+function tab(id,ev){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on'));
+ document.getElementById(id).classList.add('on');ev.target.classList.add('on');window.scrollTo(0,0);}
+
+function filt(){var q=document.getElementById('q').value.toLowerCase();
+ document.querySelectorAll('#tbl tbody tr').forEach(function(r){r.style.display=
+ r.innerText.toLowerCase().includes(q)?'':'none'})}
+document.querySelectorAll('#tbl th').forEach(function(th,ci){th.onclick=function(){
+ var tb=document.querySelector('#tbl tbody');var rs=[...tb.rows];
+ rs.sort(function(a,b){var x=a.cells[ci].innerText,y=b.cells[ci].innerText;
+ var nx=parseFloat(x),ny=parseFloat(y);if(!isNaN(nx)&&!isNaN(ny))return nx-ny;return x.localeCompare(y)});
+ if(th.dir!=='asc'){rs.reverse();th.dir='asc'}else{th.dir='desc'}
+ rs.forEach(function(r){tb.appendChild(r)})}});
+</script></body></html>

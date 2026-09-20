@@ -1,0 +1,13 @@
+{
+ "model": "Qwen3-8B-CC-SFT-v1",
+ "captured_at": "2026-09-17T15:06:24+0800",
+ "hf_checkpoint": "/data/wangshenghua/wsh/models/Qwen3-8B-CC-SFT-v1",
+ "registry_role": "formal_student_model_sft_v1",
+ "config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+ "tokenizer_sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+ "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+ "training_config_sha256": "9558196892740aab31e6aef247da7f160dfa26286797d23ad5717aa22e7e9464",
+ "shard_manifest_sha256": "cc8a142651d7070db8560f6e712ce1524ea6c0e642168b5fd77beb03d82382b4",
+ "parent": "Qwen/Qwen3-8B",
+ "serving": "sglang 0.5.15.post1 TP2 x4, triton, reasoning-parser qwen3, tool-call-parser auto, ctx 32768, mem-frac 0.78"
+}

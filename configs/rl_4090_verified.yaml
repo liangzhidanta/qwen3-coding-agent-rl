@@ -1,0 +1,59 @@
+# 4090 实测验证的 RL 配置（RL_RESOURCE_FEASIBILITY_REPORT.md §8 的机器可读版）
+# 每个值都对应 RL_RESOURCE_BOUNDARY.csv 的真实实验，不得凭记忆修改
+model:
+  name: Qwen3-8B-CC-SFT-v1
+  hf_repo: liangzhidanta/Qwen3-8B-CC-SFT-v1
+  ref_load_torch_dist: Qwen3-8B-CC-SFT-v1_torch_dist   # A100 由 HF 权重经 convert_hf_to_torch_dist.py 重建
+  full_parameter: true
+
+actor:
+  tp: 8                 # E10: TP4 全档位 OOM（E04-E09），TP8 唯一可行
+  dp: 1
+  pp: 1
+  cp: 1
+  sequence_parallel: true
+  full_recompute: {granularity: full, method: uniform, num_layers: 1}
+  max_tokens_per_gpu: 4096
+  log_probs_chunk_size: 1024
+  optimizer_cpu_offload: true
+  precision_aware_optimizer: true
+  attention_backend: flash
+  dropout: 0.0
+
+rollout:
+  replicas: 4           # --rollout-num-gpus 8 --rollout-num-gpus-per-engine 2
+  tp: 2
+  mem_fraction_static: 0.42   # 地板 0.42：0.36 时 KV=3248tok < 17k system（E19）
+  context_length: 32768
+  max_output_tokens: 4096
+  temperature: 1.0
+  tool_call_parser: qwen25     # 关键：qwen3_coder 对 Qwen3-dense 零识别（use_tool=False、reward 恒 0）
+  reasoning_parser: qwen3
+  attention_backend: triton
+  disable_cuda_graph: true
+
+grpo:
+  group_size: 2         # E16 两度 exit=0；group=4 训练相位 OOM（GPU0 他人占 3.9GB，E17/E18）
+  clip_low: 0.2
+  clip_high: 0.28
+  lr: 1e-6
+  lr_schedule: constant
+  kl: disabled          # kl_coef=0 → 无需独立 ref model
+  entropy_coef: 0.0
+  reward: binary        # solved=1 / failed=0（F2P ∧ P2P ∧ applied）
+
+runtime:
+  colocate: true
+  sglang_memory_saver: true   # 必须：无 TMS 时 step1 即 OOM
+  offload_train: true
+  env:
+    LIBRARY_PATH: "<conda>/lib:/usr/lib/x86_64-linux-gnu"   # flashinfer JIT 链接
+    LD_LIBRARY_PATH: "<conda>/lib"                          # GLIBCXX_3.4.32
+    SLIME_AGENT_CC_EXTRA_ENVS: '{"IS_SANDBOX":"1","DISABLE_AUTOUPDATER":"1","CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT":"1"}'
+
+verified_boundaries:          # 4090 专属，A100 不可外推
+  colocate_group2: PASS
+  colocate_group4: OOM_train_gpu0
+  actor_tp4: OOM_all_token_budgets
+  step_bench_bs32_g8: "30.5min wall；256 条中 125 排队超时（引擎并发 ~12）"
+  step_bench_recommended: "bs<=8 x g2 = 16 条/步，约 8-12 min/step"
